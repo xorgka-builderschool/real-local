@@ -1,0 +1,20 @@
+.popular-page__top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.popular-page__back {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.popular-page__top-bar h1 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}

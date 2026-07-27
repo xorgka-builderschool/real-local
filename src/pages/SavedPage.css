@@ -1,0 +1,67 @@
+.saved-page__title {
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.saved-page__tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.saved-page__tabs button {
+  flex: 1;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saved-page__tabs button.is-active {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+.saved-page__empty {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.saved-page__place-map {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin: -4px 0 8px 60px;
+}
+
+.saved-page__login-gate {
+  padding-top: 100px;
+  text-align: center;
+}
+
+.saved-page__login-gate h1 {
+  font-size: 20px;
+}
+
+.saved-page__login-gate p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 12px 0 20px;
+}
+
+.saved-page__login-cta {
+  display: inline-block;
+  height: 44px;
+  line-height: 44px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}

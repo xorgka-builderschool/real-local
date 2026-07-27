@@ -1,0 +1,103 @@
+.all-maps-page__top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.all-maps-page__back {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.all-maps-page__top-bar h1 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.all-maps-page__filters-block {
+  padding-top: 0;
+  padding-bottom: 4px;
+}
+
+.all-maps-page__categories {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 16px 0;
+  margin: -16px 0 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.all-maps-page__categories::-webkit-scrollbar {
+  display: none;
+}
+
+.all-maps-page__category-pill {
+  flex-shrink: 0;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.all-maps-page__category-pill.is-active {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+.all-maps-page__selects {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 4px 0 16px;
+}
+
+.all-maps-page__selects select {
+  flex-shrink: 0;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  border: 1px solid #c7c2b8;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--color-surface-tint);
+  box-shadow: 0 2px 6px rgba(51, 46, 38, 0.04);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238C8780' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 28px 0 14px;
+}
+
+.all-maps-page__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.all-maps-page__grid .map-card {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.all-maps-page__empty {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 40px 0;
+}

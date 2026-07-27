@@ -2,18 +2,42 @@
   padding-bottom: 4px;
 }
 
+.home-page__location-wrap {
+  position: relative;
+  margin-bottom: 6px;
+}
+
 .home-page__location {
   display: flex;
   align-items: center;
   gap: 6px;
+  border: none;
+  background: none;
+  padding: 0;
   font-size: 13px;
   font-weight: 600;
+  font-family: inherit;
   color: var(--color-text-muted);
-  margin-bottom: 6px;
+  cursor: pointer;
 }
 
 .home-page__location-chevron {
-  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.home-page__location-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 170px;
+  background: var(--color-surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 21;
 }
 
 .home-page__greeting {

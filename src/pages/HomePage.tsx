@@ -32,6 +32,7 @@ export function HomePage() {
   const [category, setCategory] = useState(ALL);
   const [curator, setCurator] = useState(ALL);
   const [showRegionMenu, setShowRegionMenu] = useState(false);
+  const [showLocationMenu, setShowLocationMenu] = useState(false);
 
   const regions = useMemo(() => [ALL, ...Array.from(new Set(maps.map((m) => m.region)))], [maps]);
   const categories = useMemo(() => Array.from(new Set(places.map((p) => p.category))), [places]);
@@ -191,18 +192,46 @@ export function HomePage() {
   return (
     <div className="home-page">
       <div className="screen-padded home-page__header">
-        <div className="home-page__location">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M10 2.5c-3 0-5.4 2.3-5.4 5.6 0 4 5.4 9.4 5.4 9.4s5.4-5.4 5.4-9.4c0-3.3-2.4-5.6-5.4-5.6Z"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinejoin="round"
-            />
-            <circle cx="10" cy="8.1" r="2" stroke="currentColor" strokeWidth="1.6" />
-          </svg>
-          {region !== ALL ? region : "Seoul"}
-          <span className="home-page__location-chevron">⌄</span>
+        <div className="home-page__location-wrap">
+          <button className="home-page__location" onClick={() => setShowLocationMenu((v) => !v)}>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="M10 2.5c-3 0-5.4 2.3-5.4 5.6 0 4 5.4 9.4 5.4 9.4s5.4-5.4 5.4-9.4c0-3.3-2.4-5.6-5.4-5.6Z"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinejoin="round"
+              />
+              <circle cx="10" cy="8.1" r="2" stroke="currentColor" strokeWidth="1.6" />
+            </svg>
+            {region !== ALL ? region : "Seoul"}
+            <svg className="home-page__location-chevron" width="10" height="10" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          {showLocationMenu && (
+            <>
+              <button
+                className="home-page__region-backdrop"
+                onClick={() => setShowLocationMenu(false)}
+                aria-label="Close location filter"
+              />
+              <div className="home-page__location-menu">
+                {regions.map((r) => (
+                  <button
+                    key={r}
+                    className={`home-page__region-option ${region === r ? "is-active" : ""}`}
+                    onClick={() => {
+                      setRegion(r);
+                      setShowLocationMenu(false);
+                    }}
+                  >
+                    {r === ALL ? "All Regions" : r}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         <h1 className="home-page__greeting">

@@ -1,5 +1,5 @@
 :root {
-  --color-bg: #f2f2f0;
+  --color-bg: #f5f0e8;
   --color-surface: #ffffff;
   --color-surface-tint: #f2f1ee;
   --color-border: #e2e0da;
@@ -51,7 +51,7 @@ a {
   max-width: 430px;
   min-height: 100vh;
   margin: 0 auto;
-  background: var(--color-bg);
+  background: linear-gradient(to bottom, #fdfbf7, var(--color-bg) 50%, #fdfbf7 100%);
   position: relative;
   display: flex;
   flex-direction: column;

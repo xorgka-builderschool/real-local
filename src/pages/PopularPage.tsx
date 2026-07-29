@@ -2,11 +2,12 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { MapCard } from "../components/MapCard";
+import { LoadingState } from "../components/LoadingState";
 import "./PopularPage.css";
 
 export function PopularPage() {
   const navigate = useNavigate();
-  const { maps, savedMapIds } = useApp();
+  const { maps, savedMapIds, dataLoading } = useApp();
 
   const popularMaps = useMemo(() => [...maps].sort((a, b) => b.saveCount - a.saveCount), [maps]);
 
@@ -20,9 +21,11 @@ export function PopularPage() {
       </div>
 
       <div className="screen-padded">
-        {popularMaps.map((map) => (
-          <MapCard key={map.id} map={map} saved={savedMapIds.includes(map.id)} />
-        ))}
+        {dataLoading ? (
+          <LoadingState />
+        ) : (
+          popularMaps.map((map) => <MapCard key={map.id} map={map} saved={savedMapIds.includes(map.id)} />)
+        )}
       </div>
     </div>
   );

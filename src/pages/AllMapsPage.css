@@ -24,6 +24,35 @@
   padding-bottom: 4px;
 }
 
+.all-maps-page__tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.all-maps-page__tabs button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.all-maps-page__tabs button.is-active {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+
 .all-maps-page__categories {
   display: flex;
   gap: 8px;

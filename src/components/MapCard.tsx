@@ -26,11 +26,19 @@ export function MapCard({
   const { places } = useApp();
   const mapPlaces = places.filter((p) => p.mapId === map.id);
   const tags = Array.from(new Set(mapPlaces.map((p) => p.category))).slice(0, 2);
+  const coverPhoto = mapPlaces.find((p) => p.photoUrl)?.photoUrl;
 
   if (variant === "hero") {
     return (
       <Link to={`/maps/${map.id}`} className="map-card map-card--hero">
-        <div className="map-card__hero-media" style={{ background: gradientForMap(map.id) }}>
+        <div
+          className="map-card__hero-media"
+          style={
+            coverPhoto
+              ? { backgroundImage: `url(${coverPhoto})`, backgroundSize: "cover", backgroundPosition: "center" }
+              : { background: gradientForMap(map.id) }
+          }
+        >
           <div className="map-card__hero-scrim" />
           <span className={`map-card__hero-save ${saved ? "is-saved" : ""}`}>{saved ? "♥" : "↗"}</span>
           <div className="map-card__hero-info">
@@ -56,7 +64,12 @@ export function MapCard({
 
   return (
     <Link to={`/maps/${map.id}`} className={`map-card map-card--${variant}`}>
-      <div className="map-card__thumb">
+      <div
+        className="map-card__thumb"
+        style={
+          coverPhoto ? { backgroundImage: `url(${coverPhoto})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined
+        }
+      >
         {variant !== "compact" && <span className="map-card__region-tag">{map.region}</span>}
         {saved && <span className="map-card__saved-tag">♥</span>}
       </div>

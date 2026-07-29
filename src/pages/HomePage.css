@@ -29,7 +29,9 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  min-width: 170px;
+  min-width: 200px;
+  max-height: 320px;
+  overflow-y: auto;
   background: var(--color-surface);
   border-radius: 14px;
   box-shadow: var(--shadow-card);
@@ -38,6 +40,21 @@
   flex-direction: column;
   gap: 2px;
   z-index: 21;
+}
+
+.home-page__location-group + .home-page__location-group {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+
+.home-page__location-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  padding: 6px 12px 2px;
 }
 
 .home-page__greeting {

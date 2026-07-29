@@ -1,10 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { BookmarkIcon, HomeIcon, PersonIcon, PlusIcon } from "./icons";
 import "./BottomNav.css";
 
 export function BottomNav() {
   const { user } = useApp();
+  const location = useLocation();
 
   return (
     <>
@@ -32,6 +33,7 @@ export function BottomNav() {
         </NavLink>
         <NavLink
           to={user ? "/profile" : "/login"}
+          state={user ? undefined : { from: location.pathname }}
           className={({ isActive }) => `bottom-nav__item ${isActive ? "is-active" : ""}`}
         >
           {({ isActive }) => (

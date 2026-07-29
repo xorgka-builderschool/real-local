@@ -5,6 +5,8 @@ import { MapCard } from "../components/MapCard";
 import { ScrollProgress } from "../components/ScrollProgress";
 import { iconForCategory } from "../data/categoryIcons";
 import { curatorPhoto } from "../data/curatorPhotos";
+import { KOREA_LOCATIONS } from "../data/koreaLocations";
+import { LoadingState } from "../components/LoadingState";
 import "./HomePage.css";
 
 const ALL = "All";
@@ -25,7 +27,7 @@ const CURATOR_COLORS = [
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { maps, places, savedMapIds, user } = useApp();
+  const { maps, places, savedMapIds, user, dataLoading } = useApp();
   const popularCarouselRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState(ALL);
@@ -33,6 +35,7 @@ export function HomePage() {
   const [curator, setCurator] = useState(ALL);
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [showLocationMenu, setShowLocationMenu] = useState(false);
+  const [location, setLocation] = useState("Seoul");
 
   const regions = useMemo(() => [ALL, ...Array.from(new Set(maps.map((m) => m.region)))], [maps]);
   const categories = useMemo(() => Array.from(new Set(places.map((p) => p.category))), [places]);
@@ -181,8 +184,9 @@ export function HomePage() {
     return Array.from(map.values());
   }, [maps]);
 
-  const handlePickCategory = (c: string) => {
+  const handlePickCategory = (c: string, target: HTMLElement) => {
     setCategory((prev) => (prev === c ? ALL : c));
+    target.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   };
 
   const handlePickCurator = (name: string) => {
@@ -203,7 +207,7 @@ export function HomePage() {
               />
               <circle cx="10" cy="8.1" r="2" stroke="currentColor" strokeWidth="1.6" />
             </svg>
-            {region !== ALL ? region : "Seoul"}
+            {location}
             <svg className="home-page__location-chevron" width="10" height="10" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -214,20 +218,25 @@ export function HomePage() {
               <button
                 className="home-page__region-backdrop"
                 onClick={() => setShowLocationMenu(false)}
-                aria-label="Close location filter"
+                aria-label="Close location picker"
               />
               <div className="home-page__location-menu">
-                {regions.map((r) => (
-                  <button
-                    key={r}
-                    className={`home-page__region-option ${region === r ? "is-active" : ""}`}
-                    onClick={() => {
-                      setRegion(r);
-                      setShowLocationMenu(false);
-                    }}
-                  >
-                    {r === ALL ? "All Regions" : r}
-                  </button>
+                {KOREA_LOCATIONS.map((group) => (
+                  <div key={group.label} className="home-page__location-group">
+                    <div className="home-page__location-group-label">{group.label}</div>
+                    {group.options.map((opt) => (
+                      <button
+                        key={opt}
+                        className={`home-page__region-option ${location === opt ? "is-active" : ""}`}
+                        onClick={() => {
+                          setLocation(opt);
+                          setShowLocationMenu(false);
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
                 ))}
               </div>
             </>
@@ -258,16 +267,13 @@ export function HomePage() {
             <button
               className={`home-page__region-btn ${region !== ALL ? "is-active" : ""}`}
               onClick={() => setShowRegionMenu((v) => !v)}
-              aria-label="Filter by region"
+              aria-label="Filter results by region"
             >
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path
-                  d="M10 2.5c-3 0-5.4 2.3-5.4 5.6 0 4 5.4 9.4 5.4 9.4s5.4-5.4 5.4-9.4c0-3.3-2.4-5.6-5.4-5.6Z"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinejoin="round"
-                />
-                <circle cx="10" cy="8.1" r="2" stroke="currentColor" strokeWidth="1.6" />
+                <line x1="3" y1="6" x2="17" y2="6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                <circle cx="8" cy="6" r="2.1" fill="var(--color-surface)" stroke="currentColor" strokeWidth="1.6" />
+                <line x1="3" y1="14" x2="17" y2="14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                <circle cx="13" cy="14" r="2.1" fill="var(--color-surface)" stroke="currentColor" strokeWidth="1.6" />
               </svg>
             </button>
 
@@ -300,7 +306,10 @@ export function HomePage() {
         <div className="home-page__categories">
           <button
             className={`home-page__category-pill ${category === ALL ? "is-active" : ""}`}
-            onClick={() => setCategory(ALL)}
+            onClick={(e) => {
+              setCategory(ALL);
+              e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+            }}
           >
             All
           </button>
@@ -308,7 +317,7 @@ export function HomePage() {
             <button
               key={c}
               className={`home-page__category-pill ${category === c ? "is-active" : ""}`}
-              onClick={() => handlePickCategory(c)}
+              onClick={(e) => handlePickCategory(c, e.currentTarget)}
             >
               {iconForCategory(c)} {c}
             </button>
@@ -330,34 +339,42 @@ export function HomePage() {
               Show all
             </button>
           </div>
-          <div className="home-page__hero-carousel-wrap">
-            <div className="home-page__hero-carousel" ref={popularCarouselRef}>
-              {popularMaps.map((map) => (
-                <MapCard key={map.id} map={map} saved={savedMapIds.includes(map.id)} variant="hero" />
-              ))}
+          {dataLoading ? (
+            <div className="home-page__inset">
+              <LoadingState />
             </div>
-            <button
-              className="home-page__carousel-arrow home-page__carousel-arrow--left"
-              onClick={() => scrollPopularBy(-1)}
-              aria-label="Previous"
-            >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M12.5 4.5 6 10l6.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button
-              className="home-page__carousel-arrow home-page__carousel-arrow--right"
-              onClick={() => scrollPopularBy(1)}
-              aria-label="Next"
-            >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M7.5 4.5 14 10l-6.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-          <div className="home-page__inset">
-            <ScrollProgress targetRef={popularCarouselRef} />
-          </div>
+          ) : (
+            <>
+              <div className="home-page__hero-carousel-wrap">
+                <div className="home-page__hero-carousel" ref={popularCarouselRef}>
+                  {popularMaps.map((map) => (
+                    <MapCard key={map.id} map={map} saved={savedMapIds.includes(map.id)} variant="hero" />
+                  ))}
+                </div>
+                <button
+                  className="home-page__carousel-arrow home-page__carousel-arrow--left"
+                  onClick={() => scrollPopularBy(-1)}
+                  aria-label="Previous"
+                >
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M12.5 4.5 6 10l6.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  className="home-page__carousel-arrow home-page__carousel-arrow--right"
+                  onClick={() => scrollPopularBy(1)}
+                  aria-label="Next"
+                >
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M7.5 4.5 14 10l-6.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
+              <div className="home-page__inset">
+                <ScrollProgress targetRef={popularCarouselRef} />
+              </div>
+            </>
+          )}
         </section>
       )}
 
@@ -371,12 +388,18 @@ export function HomePage() {
           )}
         </div>
         <div className="home-page__list">
-          {filteredMaps.length === 0 && (
-            <p className="home-page__empty">No maps match those filters yet. Try widening your search.</p>
+          {dataLoading ? (
+            <LoadingState />
+          ) : (
+            <>
+              {filteredMaps.length === 0 && (
+                <p className="home-page__empty">No maps match those filters yet. Try widening your search.</p>
+              )}
+              {filteredMaps.map((map) => (
+                <MapCard key={map.id} map={map} saved={savedMapIds.includes(map.id)} />
+              ))}
+            </>
           )}
-          {filteredMaps.map((map) => (
-            <MapCard key={map.id} map={map} saved={savedMapIds.includes(map.id)} />
-          ))}
         </div>
       </section>
 

@@ -4,9 +4,10 @@ import { curatorPhoto } from "../data/curatorPhotos";
 import "./ProfilePage.css";
 
 export function ProfilePage() {
-  const { user, logout, savedMapIds, savedPlaceIds } = useApp();
+  const { user, authLoading, logout, savedMapIds, savedPlaceIds } = useApp();
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (authLoading) return null;
+  if (!user) return <Navigate to="/login" state={{ from: "/profile" }} replace />;
 
   const photo = curatorPhoto(user.id);
 

@@ -1,21 +1,40 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { MapView } from "../components/MapView";
 import { PlaceRow } from "../components/PlaceRow";
+import { PlaceDetailSheet } from "../components/PlaceDetailSheet";
+import { LoadingState } from "../components/LoadingState";
+import type { Place } from "../types";
 import "./MapDetailPage.css";
 
 export function MapDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { maps, places, reviews, user, savedMapIds, savedPlaceIds, toggleSaveMap, toggleSavePlace, addReview } =
-    useApp();
+  const location = useLocation();
+  const {
+    maps,
+    places,
+    reviews,
+    dataLoading,
+    user,
+    savedMapIds,
+    savedPlaceIds,
+    toggleSaveMap,
+    toggleSavePlace,
+    addReview,
+  } = useApp();
   const [shareMessage, setShareMessage] = useState("");
   const [reviewDraft, setReviewDraft] = useState("");
+  const [pinSelectedPlace, setPinSelectedPlace] = useState<Place | null>(null);
 
   const map = maps.find((m) => m.id === id);
   const mapPlaces = places.filter((p) => p.mapId === id);
   const mapReviews = reviews.filter((r) => r.mapId === id);
+
+  if (dataLoading) {
+    return <LoadingState label="Loading map…" />;
+  }
 
   if (!map) {
     return (
@@ -30,7 +49,7 @@ export function MapDetailPage() {
 
   const handleToggleSaveMap = () => {
     if (!user) {
-      navigate("/login");
+      navigate("/login", { state: { from: location.pathname } });
       return;
     }
     toggleSaveMap(map.id);
@@ -38,7 +57,7 @@ export function MapDetailPage() {
 
   const handleTogglePlace = (placeId: string) => {
     if (!user) {
-      navigate("/login");
+      navigate("/login", { state: { from: location.pathname } });
       return;
     }
     toggleSavePlace(placeId);
@@ -76,7 +95,7 @@ export function MapDetailPage() {
         <h1>{map.title}</h1>
       </div>
 
-      <MapView places={mapPlaces} />
+      <MapView places={mapPlaces} onPlaceClick={setPinSelectedPlace} />
 
       <div className="screen-padded">
         <p className="map-detail-page__desc">{map.description}</p>
@@ -115,21 +134,32 @@ export function MapDetailPage() {
           </form>
         ) : (
           <p className="map-detail-page__login-hint">
-            <Link to="/login">Log in</Link> to write a review for this map.
+            <Link to="/login" state={{ from: location.pathname }}>
+              Log in
+            </Link>{" "}
+            to write a review for this map.
           </p>
         )}
         <div className="map-detail-page__reviews">
           {mapReviews.length === 0 && <p className="map-detail-page__empty">No reviews yet — be the first.</p>}
           {mapReviews.map((review) => (
             <div key={review.id} className="map-detail-page__review">
-              <p>"{review.content}"</p>
-              <span>
-                — {review.author} · {review.createdAt}
-              </span>
+              <div className="map-detail-page__review-header">
+                <span className="map-detail-page__review-avatar">{review.author.charAt(0)}</span>
+                <div className="map-detail-page__review-byline">
+                  <span className="map-detail-page__review-author">{review.author}</span>
+                  <span className="map-detail-page__review-date">{review.createdAt.slice(0, 10)}</span>
+                </div>
+              </div>
+              <p className="map-detail-page__review-content">{review.content}</p>
             </div>
           ))}
         </div>
       </div>
+
+      {pinSelectedPlace && (
+        <PlaceDetailSheet place={pinSelectedPlace} onClose={() => setPinSelectedPlace(null)} />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-export type Role = "guest" | "user" | "curator";
+export type Role = "user" | "curator";
 
 export interface AppUser {
   id: string;
@@ -15,6 +15,8 @@ export interface Place {
   priceTier: string;
   lat: number;
   lng: number;
+  photoUrl?: string;
+  googlePlaceId?: string;
 }
 
 export interface MapItem {

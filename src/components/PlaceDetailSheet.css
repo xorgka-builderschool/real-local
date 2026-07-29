@@ -1,0 +1,166 @@
+.place-sheet__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(51, 46, 38, 0.45);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: place-sheet-fade 0.18s ease;
+}
+
+@keyframes place-sheet-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.place-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-radius: 20px 20px 0 0;
+  padding: 12px 20px 28px;
+  box-shadow: var(--shadow-card);
+  animation: place-sheet-up 0.22s ease;
+}
+
+@keyframes place-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.place-sheet__handle {
+  width: 36px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  margin: 0 auto 16px;
+}
+
+.place-sheet__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.place-sheet__photo {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+
+.place-sheet__name {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.place-sheet__meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.place-sheet__loading {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 12px 0 0;
+}
+
+.place-sheet__google-info {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.place-sheet__info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.place-sheet__info-row .is-open {
+  color: #4c8c5c;
+}
+
+.place-sheet__info-row .is-closed {
+  color: #c1443a;
+}
+
+.place-sheet__address {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.place-sheet__hours-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.place-sheet__hours-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.place-sheet__map {
+  margin-top: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.place-sheet__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.place-sheet__maps-link,
+.place-sheet__directions-link {
+  flex: 1;
+  text-align: center;
+  height: 46px;
+  line-height: 46px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.place-sheet__maps-link {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.place-sheet__directions-link {
+  background: var(--color-surface-tint);
+  color: var(--color-text);
+}

@@ -14,6 +14,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // these anonymous queries fail and leave the home page looking empty.
 export const publicSupabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
+    storageKey: "real-local-public-anon",
     persistSession: false,
     autoRefreshToken: false,
     detectSessionInUrl: false,

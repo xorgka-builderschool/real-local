@@ -59,17 +59,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const profile = session?.user ? await fetchProfile(session.user.id) : null;
+    const applySession = async (userId?: string) => {
+      const profile = userId ? await fetchProfile(userId) : null;
       if (active) {
         setUser(profile);
         setAuthLoading(false);
       }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      void applySession(session?.user.id);
     });
 
-    const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const profile = session?.user ? await fetchProfile(session.user.id) : null;
-      if (active) setUser(profile);
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Supabase recommends keeping this callback synchronous. Calling another
+      // Supabase method while the auth event lock is held can stall OAuth return.
+      setTimeout(() => {
+        void applySession(session?.user.id);
+      }, 0);
     });
 
     return () => {

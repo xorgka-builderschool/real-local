@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { publicSupabase, supabase } from "../lib/supabaseClient";
 import type { AppUser, MapItem, Place, Review } from "../types";
 
 export interface NewPlaceDraft {
@@ -81,15 +81,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // Public data: maps, places, reviews, save counts. Visible to everyone, logged in or not.
   const fetchPublicData = useCallback(async () => {
     const [{ data: mapRows }, { data: placeRows }, { data: reviewRows }, { data: countRows }] = await Promise.all([
-      supabase
+      publicSupabase
         .from("maps")
         .select("id, title, description, region, center_lat, center_lng, created_at, curator_id, profiles!maps_curator_id_fkey(name)"),
-      supabase.from("places").select("id, map_id, name, category, price_tier, lat, lng, photo_url, google_place_id"),
-      supabase
+      publicSupabase.from("places").select("id, map_id, name, category, price_tier, lat, lng, photo_url, google_place_id"),
+      publicSupabase
         .from("map_reviews")
         .select("id, map_id, content, created_at, user_id, profiles(name)")
         .order("created_at", { ascending: false }),
-      supabase.from("map_save_counts").select("map_id, save_count"),
+      publicSupabase.from("map_save_counts").select("map_id, save_count"),
     ]);
 
     const saveCountByMap = new Map((countRows ?? []).map((row) => [row.map_id, row.save_count]));

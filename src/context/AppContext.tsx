@@ -80,7 +80,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Public data: maps, places, reviews, save counts. Visible to everyone, logged in or not.
   const fetchPublicData = useCallback(async () => {
-    const [{ data: mapRows }, { data: placeRows }, { data: reviewRows }, { data: countRows }] = await Promise.all([
+    const [mapsResult, placesResult, reviewsResult, countsResult] = await Promise.all([
       publicSupabase
         .from("maps")
         .select("id, title, description, region, center_lat, center_lng, created_at, curator_id, profiles!maps_curator_id_fkey(name)"),
@@ -91,6 +91,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .order("created_at", { ascending: false }),
       publicSupabase.from("map_save_counts").select("map_id, save_count"),
     ]);
+
+    const publicDataError = [mapsResult.error, placesResult.error, reviewsResult.error, countsResult.error].find(Boolean);
+    if (publicDataError) {
+      console.error("Failed to load public data", JSON.stringify({
+        code: publicDataError.code,
+        message: publicDataError.message,
+        details: publicDataError.details,
+        hint: publicDataError.hint,
+      }));
+    }
+
+    const mapRows = mapsResult.data;
+    const placeRows = placesResult.data;
+    const reviewRows = reviewsResult.data;
+    const countRows = countsResult.data;
 
     const saveCountByMap = new Map((countRows ?? []).map((row) => [row.map_id, row.save_count]));
 
